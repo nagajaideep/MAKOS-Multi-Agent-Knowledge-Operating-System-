@@ -232,7 +232,7 @@ The goal is to look like a **real Indian government data portal**, but light and
 | Real data downloaded and processed (`data/`) | Done: 11,889 awards, 5,761 vendors, 2,317 debarred firms, 34 GFR clauses, the 2024 amendment |
 | Backend with all 17 features (`backend/`) | Done. See `backend/README.md` for the feature-to-code map |
 | End-to-end tests of the 8 scenes (`tests/`) | Done: 11 tests passing (offline LLM mode) |
-| Web UI | Next, after the UI review |
+| Web UI (`frontend/`) | Done: one page with tabs (Ask, Cases, Approvals, Audit Trail, Savings, Demo Controls) and a "Logged in as" switcher |
 
 **Demo vendors (real data):**
 - Vendor A: *Teleconcepts (India) Pvt Ltd*, the registry status change.

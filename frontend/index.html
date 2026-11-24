@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MAKOS – Procurement Knowledge Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+
+<div class="utility">
+  <div class="wrap utility-row">
+    <span>Deccan Power Ltd · Purchase Department</span>
+    <span class="utility-links">
+      <a href="#main">Skip to main content</a>
+      <span class="sep">|</span>
+      <span>Text size:</span>
+      <button class="txt" data-size="-1" title="Decrease text size">A-</button>
+      <button class="txt" data-size="0" title="Normal text size">A</button>
+      <button class="txt" data-size="1" title="Increase text size">A+</button>
+    </span>
+  </div>
+</div>
+
+<header class="masthead">
+  <div class="wrap masthead-row">
+    <div>
+      <div class="site-name">MAKOS</div>
+      <div class="site-sub">Procurement Knowledge Portal</div>
+    </div>
+    <div class="login">
+      <label for="who">Logged in as</label>
+      <select id="who"></select>
+      <div id="who-role" class="who-role"></div>
+    </div>
+  </div>
+  <div class="tricolour"><span></span><span></span><span></span></div>
+</header>
+
+<nav class="mainnav" aria-label="Main">
+  <div class="wrap">
+    <button data-tab="ask" class="active">Ask</button>
+    <button data-tab="cases">Cases</button>
+    <button data-tab="approvals">Approvals <span id="appr-count" class="count" hidden></span></button>
+    <button data-tab="audit">Audit Trail</button>
+    <button data-tab="savings">Savings</button>
+    <button data-tab="demo">Demo Controls</button>
+  </div>
+</nav>
+
+<main id="main" class="wrap">
+  <div class="crumb">Home &rsaquo; <span id="crumb-here">Ask</span></div>
+  <div id="flash" class="flash" hidden></div>
+
+  <!-- ASK -->
+  <section id="tab-ask" class="tab">
+    <h1>Ask about a vendor</h1>
+    <p class="lead">Every question goes through MAKOS. It is answered once, reused for colleagues with the same access, and refreshed only when its data has changed.</p>
+    <form id="ask-form" class="ask-form">
+      <label for="q" class="vh">Question</label>
+      <input id="q" autocomplete="off" placeholder="e.g. Can I place a Rs 18 lakh order with Teleconcepts (India) Pvt Ltd?">
+      <button type="submit" class="btn primary">Ask</button>
+    </form>
+    <div class="examples">Examples:
+      <a href="#" data-q="Can I place a Rs 18 lakh order for transformer oil with Teleconcepts (India) Pvt Ltd?">Teleconcepts, ₹18 lakh</a>
+      <a href="#" data-q="Is Teleconcepts India Pvt Ltd okay to buy from for 18 lakh?">same question, other words</a>
+      <a href="#" data-q="Can we give a 3 lakh furniture repair order to Global Enterprises?">Global Enterprises, ₹3 lakh</a>
+      <a href="#" data-q="Order worth 30 lakh with Verder Scientific Private Limited?">Verder Scientific, ₹30 lakh</a>
+    </div>
+    <div id="answer"></div>
+  </section>
+
+  <!-- CASES -->
+  <section id="tab-cases" class="tab" hidden>
+    <h1>Cases</h1>
+    <p class="lead" id="cases-note"></p>
+    <div class="grid-2">
+      <div>
+        <table class="data" id="cases-table">
+          <thead><tr><th>#</th><th>Vendor</th><th>Started by</th><th>Members</th><th>Status</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="box">
+          <h3>Start a vendor check</h3>
+          <form id="start-form" class="inline-form">
+            <input id="start-vendor" placeholder="Vendor name">
+            <button class="btn">Start</button>
+          </form>
+          <p class="hint">If a colleague already has an open case for the vendor, you are added to it instead.</p>
+        </div>
+      </div>
+      <div id="case-detail" class="box muted-box">Select a case to see its conversation.</div>
+    </div>
+  </section>
+
+  <!-- APPROVALS -->
+  <section id="tab-approvals" class="tab" hidden>
+    <h1>Approvals</h1>
+    <p class="lead">Only risky actions wait here. Low-risk steps run automatically. A request not decided in time escalates to the Vigilance Officer.</p>
+    <table class="data" id="appr-table">
+      <thead><tr><th>#</th><th>Action</th><th>Vendor</th><th>Risk</th><th>Requested for</th><th>Assigned to</th><th>Status</th><th>Due by</th><th></th></tr></thead>
+      <tbody></tbody>
+    </table>
+    <div id="replay"></div>
+  </section>
+
+  <!-- AUDIT -->
+  <section id="tab-audit" class="tab" hidden>
+    <h1>Audit Trail</h1>
+    <p class="lead" id="audit-note"></p>
+    <table class="data small" id="audit-table">
+      <thead><tr><th>Time</th><th>On behalf of / chain</th><th>Agent</th><th>Action</th><th>Outcome</th><th>Case</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- SAVINGS -->
+  <section id="tab-savings" class="tab" hidden>
+    <h1>Savings</h1>
+    <p class="lead" id="sav-note"></p>
+    <div class="stats" id="stats"></div>
+    <div class="grid-2">
+      <div class="box"><h3>Tokens: with and without MAKOS</h3><div id="compare"></div></div>
+      <div class="box"><h3>Department token budgets</h3><div id="budgets"></div></div>
+    </div>
+    <h3>Recent questions</h3>
+    <table class="data small" id="ledger-table">
+      <thead><tr><th>Time</th><th>Asked by</th><th>Question</th><th>Handled as</th><th>Parts refreshed</th><th>Tokens</th><th>Time (ms)</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+
+  <!-- DEMO -->
+  <section id="tab-demo" class="tab" hidden>
+    <h1>Demo Controls</h1>
+    <p class="lead">These buttons act as the Administrator. They change only the demo copy of the data.</p>
+    <table class="data controls">
+      <tbody>
+        <tr><td><b>Reset demo</b><br><span class="hint">Fresh start. Company registry snapshot 1 (status at the time of the 2023 award). Current GFR limits.</span></td>
+            <td><button class="btn" data-demo="reset">Reset</button></td></tr>
+        <tr><td><b>Reset with pre-2024 GFR limits</b><br><span class="hint">Use this before replaying the 10.07.2024 amendment.</span></td>
+            <td><button class="btn" data-demo="reset-before">Reset (old rules)</button></td></tr>
+        <tr><td><b>Load company registry update</b><br><span class="hint">Loads the current MCA status. Nothing is recomputed until someone asks again.</span></td>
+            <td><button class="btn" data-demo="registry">Load update</button></td></tr>
+        <tr><td><b>Apply GFR amendment</b><br><span class="hint">DoE OM No. F.1/3/2024-PPD dated 10.07.2024 (limited tender up to ₹50 lakh).</span></td>
+            <td><button class="btn" data-demo="gfr">Apply</button></td></tr>
+        <tr><td><b>Let pending approvals run out of time</b><br><span class="hint">Pending requests escalate to the Vigilance Officer, as if the manager had not responded.</span></td>
+            <td><button class="btn" data-demo="expire">Escalate now</button></td></tr>
+        <tr><td><b>Upload a quotation with a hidden instruction</b><br><span class="hint">Fictional vendor. Uploaded as the user currently logged in. <a href="/api/demo/sample-quotation.pdf">Download the file</a></span></td>
+            <td><button class="btn" data-demo="upload">Upload sample</button></td></tr>
+        <tr><td><b>Upload your own document</b><br><span class="hint">PDF or text. Checked for instruction-like text.</span></td>
+            <td><input type="file" id="own-file" accept=".pdf,.txt"></td></tr>
+        <tr><td><b>Agent permission test</b><br><span class="hint">Each agent tries a tool it is not allowed to use.</span></td>
+            <td><button class="btn" data-demo="perm">Run test</button></td></tr>
+        <tr><td><b>Simulate a stuck agent</b><br><span class="hint">An agent repeats a failing step until the guard stops it.</span></td>
+            <td><button class="btn" data-demo="stuck">Run</button></td></tr>
+      </tbody>
+    </table>
+    <div id="demo-out"></div>
+    <h3>Data change log</h3>
+    <table class="data small" id="changes-table">
+      <thead><tr><th>Time</th><th>Source</th><th>Field</th><th>Before</th><th>After</th><th>Note</th></tr></thead>
+      <tbody></tbody>
+    </table>
+  </section>
+</main>
+
+<div id="modal" class="modal" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true">
+    <button class="modal-close" aria-label="Close">×</button>
+    <div id="modal-body"></div>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="wrap">
+    <p>Data sources: Ministry of Corporate Affairs company master data; Award of Contract records, Central Public Procurement Portal; NSE/SEBI and World Bank debarment lists; General Financial Rules 2017 and OM dated 10.07.2024, Department of Expenditure, Ministry of Finance.</p>
+    <p>Deccan Power Ltd is a fictional organisation used for demonstration. This is not a Government of India website. Company names, statuses and awards are shown as published in the sources and are facts for review, not findings.</p>
+    <p class="foot-meta"><span id="foot-mode"></span> · <span id="foot-rules"></span> · Last updated: <span id="foot-date"></span></p>
+  </div>
+</footer>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

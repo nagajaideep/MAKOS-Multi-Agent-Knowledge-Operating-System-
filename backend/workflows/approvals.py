@@ -62,6 +62,11 @@ def _public(a):
     a["params"] = json.loads(a["params"]) if isinstance(a["params"], str) else a["params"]
     a["assigned_to_name"] = roles.USERS.get(a["assigned_to"], {}).get("name")
     a["requested_for_name"] = roles.USERS.get(a["requested_for"], {}).get("name")
+    a["decided_by_name"] = roles.USERS.get(a.get("decided_by"), {}).get("name")
+    with db.state() as s:
+        r = s.execute("SELECT action_id, verified FROM actions WHERE approval_id=? ORDER BY action_id DESC LIMIT 1",
+                      (a["approval_id"],)).fetchone()
+    a["action_id"], a["action_verified"] = (r["action_id"], bool(r["verified"])) if r else (None, None)
     return a
 
 

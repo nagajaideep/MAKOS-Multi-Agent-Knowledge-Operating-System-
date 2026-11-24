@@ -9,6 +9,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse, HTMLResponse, Response
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
 from backend import config
@@ -100,13 +101,15 @@ def _members(s, cid):
 def cases(user: str):
     try:
         roles.user(user)
-        out = []
+        out, total = [], 0
         with db.state() as s:
             for c in s.execute("SELECT * FROM cases ORDER BY case_id DESC"):
+                total += 1
                 m = _members(s, c["case_id"])
                 if roles.can_view_case(user, m):
-                    out.append({**dict(c), "members": [roles.USERS[x]["name"] for x in sorted(m)]})
-        return out
+                    out.append({**dict(c), "created_by_name": roles.USERS[c["created_by"]]["name"],
+                                "members": [roles.USERS[x]["name"] for x in sorted(m)]})
+        return {"cases": out, "visible": len(out), "total": total}
     except Exception as e:
         _err(e)
 
@@ -209,6 +212,15 @@ def savings():
     return budget.savings()
 
 
+@app.get("/api/ledger")
+def ledger(limit: int = 30):
+    with db.state() as s:
+        rows = [dict(r) for r in s.execute("SELECT * FROM ledger ORDER BY entry_id DESC LIMIT ?", (limit,))]
+    for r in rows:
+        r["user_name"] = roles.USERS.get(r["user_id"], {}).get("name")
+    return rows
+
+
 @app.get("/api/data/vendors")
 def vendors(q: str = "", limit: int = 20):
     rows = data_agent.run(
@@ -295,12 +307,20 @@ def permission_test():
     return demo.permission_test()
 
 
+@app.post("/api/demo/expire-approvals")
+def expire():
+    return demo.expire_approvals()
+
+
 @app.post("/api/demo/stuck-agent")
 def stuck(user: str = "ravi"):
     return demo.stuck_agent(user)
 
 
+FRONTEND = config.ROOT / "frontend"
+app.mount("/static", StaticFiles(directory=FRONTEND), name="static")
+
+
 @app.get("/", response_class=HTMLResponse)
 def home():
-    return HTMLResponse("<p>MAKOS API is running. The web UI will be added next. "
-                        "See <a href='/docs'>/docs</a> for the API and <a href='/portal'>/portal</a> for the demo vendor portal.</p>")
+    return FileResponse(FRONTEND / "index.html")

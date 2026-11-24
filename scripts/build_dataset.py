@@ -187,11 +187,11 @@ def main() -> None:
 
     vid = {}
 
-    def vendor_for(name: str, pan=None) -> int:
+    def vendor_for(name: str) -> int:
+        # A PAN seen on a debarment list is NEVER copied onto a vendor matched only by name:
+        # a name match is not proof that it is the same firm.
         k = norm(name)
         if k in vid:
-            if pan:
-                db.execute("UPDATE vendors SET pan=?, pan_is_synthetic=0 WHERE vendor_id=?", (pan, vid[k]))
             return vid[k]
         m = mca.get(k, {})
         cur = db.execute(
@@ -203,7 +203,7 @@ def main() -> None:
              STATUS_LABEL.get(m.get("mca_status"), m.get("mca_status")), m.get("company_class"),
              m.get("date_of_registration"), m.get("registered_state"), m.get("authorized_capital"),
              m.get("paidup_capital"), m.get("activity"), m.get("roc"), m.get("latest_annual_return"),
-             pan, 0, synthetic_bank(m.get("cin") or k)))
+             None, 0, synthetic_bank(m.get("cin") or k)))
         vid[k] = cur.lastrowid
         return vid[k]
 
@@ -218,14 +218,14 @@ def main() -> None:
     award_vendors = set(vid)
     for d in debar:
         k = norm(d["name"])
-        v = vendor_for(d["name"], d["pan"]) if (k in award_vendors or k in mca) else None
+        v = vendor_for(d["name"]) if (k in award_vendors or k in mca) else None
         db.execute("""INSERT INTO debarments(vendor_id, name, norm_name, list_name, pan, grounds, start_date, end_date)
                       VALUES(?,?,?,?,?,?,?,?)""",
                    (v, d["name"], k, d["list_name"], d["pan"], d["grounds"], d["start_date"], d["end_date"]))
 
     dd = [
         ("vendors", "cin, mca_*, date_of_registration, capital, activity", "MCA company master (data.gov.in)", "real"),
-        ("vendors", "pan", "NSE/SEBI debarred list where available", "real when pan_is_synthetic=0; otherwise empty"),
+        ("vendors", "pan", "none", "empty: no public source links a PAN to these vendors; list PANs stay on the debarments table"),
         ("vendors", "bank_account", "generated", "SYNTHETIC (DEMO prefix) for the masking demo only"),
         ("awards", "*", "CPPP award-of-contract records (eprocure.gov.in)", "real, as published"),
         ("debarments", "*", "NSE/SEBI and World Bank lists (via OpenSanctions)", "real; individuals removed"),

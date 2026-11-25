@@ -30,7 +30,7 @@ Everything in `data/processed/` is built from **real public Indian data** by the
 ## Added (synthetic) fields
 
 - `vendors.bank_account` is generated (prefix `DEMO`) only to show role-based masking. It is not a real account.
-- `vendors.pan` is filled only where a real PAN is published on a debarment list; otherwise it is empty.
+- `vendors.pan` is left empty. PANs from the debarment lists stay on the `debarments` table and are never copied onto a vendor matched only by name, because a name match does not prove it is the same firm.
 
 ## Demo cases found in the real data
 

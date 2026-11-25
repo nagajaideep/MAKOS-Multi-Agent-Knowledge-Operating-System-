@@ -225,7 +225,21 @@ The goal is to look like a **real Indian government data portal**, but light and
 
 ---
 
-## 9. Honest limitations
+## 9. Build status
+
+| Part | Status |
+|---|---|
+| Real data downloaded and processed (`data/`) | Done: 11,889 awards, 5,761 vendors, 2,317 debarred firms, 34 GFR clauses, the 2024 amendment |
+| Backend with all 17 features (`backend/`) | Done. See `backend/README.md` for the feature-to-code map |
+| End-to-end tests of the 8 scenes (`tests/`) | Done: 11 tests passing (offline LLM mode) |
+| Web UI | Next, after the UI review |
+
+**Demo vendors (real data):**
+- Vendor A: *Teleconcepts (India) Pvt Ltd*, the registry status change.
+- Possible match: *Global Enterprises*, a name-only debarment match that is shown as "cannot confirm".
+- Clean: *Verder Scientific Private Limited*.
+
+## 10. Honest limitations
 
 - **Award data** is scraped from CPPP by a third party, so we treat fields as "as published" and clean obvious errors.
 - **Company-registry update (Scene 5):** we have one snapshot. The update applies a status change taken from the real registry (a real company whose status is Strike Off), shown as the next load.

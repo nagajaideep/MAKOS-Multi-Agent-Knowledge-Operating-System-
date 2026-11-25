@@ -419,3 +419,16 @@ Database             RAG + Agents
               v
           Final MAKOS
 ```
+
+---
+
+## Running the demonstrator
+
+The working demo ("MAKOS: Ask Once, Answer Everyone") runs on real public Indian procurement data. See `docs/MAKOS_DEMO_PLAN.md` for the story and features, and `data/README.md` for the data sources.
+
+```bash
+pip install -r requirements.txt
+uvicorn backend.main:app --port 8000
+```
+
+Open http://127.0.0.1:8000. Use **Logged in as** to switch between Ravi, Sneha, Mr. Rao, Priya and Admin, and **Demo Controls** to reset the demo or load data updates. Tests: `python3 -m pytest -q tests/`.

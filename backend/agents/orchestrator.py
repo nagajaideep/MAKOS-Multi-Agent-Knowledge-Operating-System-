@@ -124,11 +124,25 @@ def _evidence(parts, scope_name, only=None):
     return "\n".join(lines)
 
 
+def source_label(src: str) -> str:
+    if src.startswith("GFR-"):
+        return "GFR Rule " + src[4:]
+    if src.startswith("MCA:"):
+        return "MCA company master"
+    if src.startswith("CPPP:"):
+        return "CPPP award record"
+    if src.startswith("LIST:"):
+        return src[5:]
+    return src
+
+
 def _fallback_text(decision, parts, scope_name):
     out = [f"Decision: {decision['label']}."]
     for p in parts:
         r = roles.mask_dict(p["result"], scope_name)
-        out.append(f"• {LABELS[p['part_type']]}: {roles.mask_text(r['message'], scope_name)} [{', '.join(r.get('sources', [])) or 'no source'}]")
+        labels = list(dict.fromkeys(source_label(x) for x in r.get("sources", [])))
+        src = f" (Source: {'; '.join(labels)})" if labels else " (No source found – not confirmed)"
+        out.append(f"• {LABELS[p['part_type']]}: {roles.mask_text(r['message'], scope_name)}{src}")
     return "\n".join(out)
 
 

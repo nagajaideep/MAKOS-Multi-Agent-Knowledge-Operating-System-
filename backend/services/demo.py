@@ -151,3 +151,14 @@ def stuck_agent(user_id="ravi", run_budget=6000, step_tokens=1400):
               "STOPPED – ESCALATED")
     return {"stopped": True, "reason": reason, "attempts": attempts, "tokens_spent": spent,
             "note": "Agent stopped automatically and the case was escalated to a person."}
+
+
+def expire_approvals():
+    """Move the due time of pending approvals into the past, to show escalation without waiting."""
+    from backend.workflows import approvals
+    from datetime import datetime, timedelta
+    past = (datetime.now() - timedelta(seconds=1)).isoformat(timespec="seconds")
+    with db.state() as s:
+        n = s.execute("UPDATE approvals SET due_at=? WHERE status='pending'", (past,)).rowcount
+    approvals.escalate_overdue()
+    return {"escalated": n}

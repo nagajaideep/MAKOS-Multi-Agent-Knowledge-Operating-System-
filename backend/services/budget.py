@@ -67,5 +67,6 @@ def savings() -> dict:
         "llm_modes": sorted({r["llm_mode"] for r in asked if r["llm_mode"]}),
         "budgets": budgets,
         "blocked_or_stopped": sum(r["kind"] in ("stopped", "blocked") for r in rows),
-        "price_note": f"Claude Opus 5.5 list price (${config.PRICE_IN_PER_M_USD}/M in, ${config.PRICE_OUT_PER_M_USD}/M out), ₹{config.USD_TO_INR}/$",
+        "price_note": f"Priced at ${config.PRICE_IN_PER_M_USD}/M input and ${config.PRICE_OUT_PER_M_USD}/M output tokens "
+                      f"({config.LLM_PROVIDER}; set MAKOS_PRICE_* in .env to your price list), ₹{config.USD_TO_INR}/$",
     }

@@ -212,6 +212,7 @@ def ask(user_id: str, question: str) -> dict:
             if not any(st == "computed" for st in states.values()) and not stored:
                 kind = "new_scope"   # parts shared, only the wording for this role is new
             ev = full_evidence
+        ev = f"<decision>{decision['label']}</decision>\n" + ev
         text, t_in, t_out, mode = llm.compose(ev, _fallback_text(decision, parts, scope_name))
         budget.charge(u["dept"], t_in + t_out)
         AL.save_answer(answer_key, scope_name, "vendor_check", vendor["vendor_id"], amount, parts, text, decision["decision"], user_id)

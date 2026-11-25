@@ -65,7 +65,7 @@ def users():
 
 @app.get("/api/status")
 def status():
-    return {"llm_mode": llm.mode(), "model": config.LLM_MODEL, "rules_version": rule_agent.rules_version(),
+    return {"llm_mode": llm.mode(), "model": llm.model_name(), "rules_version": rule_agent.rules_version(),
             "demo_vendors": demo.DEMO_VENDORS}
 
 

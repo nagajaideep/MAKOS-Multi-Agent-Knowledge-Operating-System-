@@ -9,7 +9,7 @@ uvicorn backend.main:app --port 8000
 
 - API docs: http://127.0.0.1:8000/docs
 - Demo vendor portal (target of the browser agent): http://127.0.0.1:8000/portal
-- Without Anthropic credentials MAKOS runs in **offline mode**: answers are written from a template and tokens are estimated. With `ANTHROPIC_API_KEY` set, answers are written by Claude and real token usage is recorded. Set `MAKOS_OFFLINE=1` to force offline mode.
+- The answer-writing model is set in the git-ignored `.env` (copy `.env.example`): `MAKOS_LLM_PROVIDER=gemini` with `GEMINI_API_KEY` (falls back from `gemini-flash-latest` to `gemini-flash-lite-latest` when busy), or `claude` with `ANTHROPIC_API_KEY`. Without a key MAKOS runs in **offline mode**: answers come from a template and tokens are estimated. Set `MAKOS_OFFLINE=1` to force offline mode (the tests do).
 - The browser agent uses the pre-installed Chromium (`MAKOS_CHROMIUM` to change the path) and calls the server at `MAKOS_BASE_URL` (default `http://127.0.0.1:8000`).
 
 ## Tests

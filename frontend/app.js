@@ -380,7 +380,7 @@ $$(".txt").forEach((b) => b.addEventListener("click", () => {
 
 async function loadStatus() {
   const st = await api("/api/status");
-  $("#foot-mode").textContent = st.llm_mode === "claude" ? `Answers written by ${st.model}` : "Offline mode: answers from templates, tokens estimated";
+  $("#foot-mode").textContent = st.llm_mode !== "offline" ? `Answers written by ${st.model}` : "Offline mode: answers from templates, tokens estimated";
   $("#foot-rules").textContent = st.rules_version === "after" ? "GFR 2017 as amended on 10.07.2024" : "GFR 2017 before the 10.07.2024 amendment";
 }
 
